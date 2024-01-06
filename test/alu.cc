@@ -211,3 +211,20 @@ TEST_F(AluTest, ShiftRightArithmetic) {
     EXPECT_EQ((uint32_t)alu->out, expected);
   }
 }
+
+TEST_F(AluTest, LessThan) {
+  std::vector<std::tuple<std::tuple<uint32_t, uint32_t>, uint32_t>> test_cases =
+      {{{0, 0}, 0},          {{1, 0}, 0},
+       {{0, 1}, 1},          {{1, 1}, 0},
+       {{0x7fffffff, 1}, 0}, {{0x7fffffff, 0x80000000}, 0},
+       {{0x80000000, 1}, 1}, {{0x80000000, 0x80000000}, 0}};
+
+  for (auto &[input, expected] : test_cases) {
+    auto &[in1, in2] = input;
+    alu->op = 8;
+    alu->in1 = in1;
+    alu->in2 = in2;
+    step();
+    EXPECT_EQ(((uint32_t)alu->out) & 1, expected);
+  }
+}
