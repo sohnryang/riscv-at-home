@@ -88,3 +88,23 @@ TEST_F(AluTest, Substraction) {
     EXPECT_EQ((uint32_t)alu->out, expected);
   }
 }
+
+TEST_F(AluTest, And) {
+  std::vector<std::tuple<std::tuple<uint32_t, uint32_t>, uint32_t>> test_cases =
+      {{{0, 0}, 0},
+       {{1, 0}, 0},
+       {{0, 1}, 0},
+       {{1, 1}, 1},
+       {{0x7fffffff, 1}, 1},
+       {{0x80000000, 1}, 0},
+       {{0x80000000, 0x80000000}, 0x80000000}};
+
+  for (auto &[input, expected] : test_cases) {
+    auto &[in1, in2] = input;
+    alu->op = 2;
+    alu->in1 = in1;
+    alu->in2 = in2;
+    step();
+    EXPECT_EQ((uint32_t)alu->out, expected);
+  }
+}
