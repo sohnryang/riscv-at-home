@@ -11,3 +11,4 @@ include(GoogleTest)
 
 add_executable(alu_test alu.cc)
 target_link_libraries(alu_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(alu_test)
