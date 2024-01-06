@@ -89,3 +89,47 @@ TEST_F(AluTest, TestAddition) {
   step();
   EXPECT_EQ((uint32_t)alu->out, 0);
 }
+
+TEST_F(AluTest, TestSubstraction) {
+  alu->op = 1;
+  alu->in1 = 0;
+  alu->in2 = 0;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 0);
+
+  alu->op = 1;
+  alu->in1 = 1;
+  alu->in2 = 0;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 1);
+
+  alu->op = 1;
+  alu->in1 = 0;
+  alu->in2 = 1;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 0xffffffff);
+
+  alu->op = 1;
+  alu->in1 = 1;
+  alu->in2 = 1;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 0);
+
+  alu->op = 1;
+  alu->in1 = 0x7fffffff;
+  alu->in2 = 1;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 0x7ffffffe);
+
+  alu->op = 1;
+  alu->in1 = 0x80000000;
+  alu->in2 = 1;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 0x7fffffff);
+
+  alu->op = 1;
+  alu->in1 = 0;
+  alu->in2 = -1;
+  step();
+  EXPECT_EQ((uint32_t)alu->out, 1);
+}
