@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <tuple>
+#include <vector>
 
 #include <verilated.h>
 #include <verilated_vcd_c.h>
@@ -47,89 +49,42 @@ protected:
 };
 
 TEST_F(AluTest, Addition) {
-  alu->op = 0;
-  alu->in1 = 0;
-  alu->in2 = 0;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0);
+  std::vector<std::tuple<std::tuple<uint32_t, uint32_t>, uint32_t>> test_cases =
+      {{{0, 0}, 0},
+       {{1, 0}, 1},
+       {{0, 1}, 1},
+       {{1, 1}, 2},
+       {{0x7fffffff, 1}, 0x80000000},
+       {{0x80000000, 1}, 0x80000001},
+       {{0x80000000, 0x80000000}, 0}};
 
-  alu->op = 0;
-  alu->in1 = 1;
-  alu->in2 = 0;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 1);
-
-  alu->op = 0;
-  alu->in1 = 0;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 1);
-
-  alu->op = 0;
-  alu->in1 = 1;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 2);
-
-  alu->op = 0;
-  alu->in1 = 0x7fffffff;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0x80000000);
-
-  alu->op = 0;
-  alu->in1 = 0x80000000;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0x80000001);
-
-  alu->op = 0;
-  alu->in1 = 0x80000000;
-  alu->in2 = 0x80000000;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0);
+  for (auto &[input, expected] : test_cases) {
+    auto &[in1, in2] = input;
+    alu->op = 0;
+    alu->in1 = in1;
+    alu->in2 = in2;
+    step();
+    EXPECT_EQ((uint32_t)alu->out, expected);
+  }
 }
 
 TEST_F(AluTest, Substraction) {
-  alu->op = 1;
-  alu->in1 = 0;
-  alu->in2 = 0;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0);
+  std::vector<std::tuple<std::tuple<uint32_t, uint32_t>, uint32_t>> test_cases =
+      {{{0, 0}, 0},
+       {{1, 0}, 1},
+       {{0, 1}, 0xffffffff},
+       {{1, 1}, 0},
+       {{0, -1}, 1},
+       {{0x7fffffff, 1}, 0x7ffffffe},
+       {{0x80000000, 1}, 0x7fffffff},
+       {{0x80000000, 0x80000000}, 0}};
 
-  alu->op = 1;
-  alu->in1 = 1;
-  alu->in2 = 0;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 1);
-
-  alu->op = 1;
-  alu->in1 = 0;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0xffffffff);
-
-  alu->op = 1;
-  alu->in1 = 1;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0);
-
-  alu->op = 1;
-  alu->in1 = 0x7fffffff;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0x7ffffffe);
-
-  alu->op = 1;
-  alu->in1 = 0x80000000;
-  alu->in2 = 1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 0x7fffffff);
-
-  alu->op = 1;
-  alu->in1 = 0;
-  alu->in2 = -1;
-  step();
-  EXPECT_EQ((uint32_t)alu->out, 1);
+  for (auto &[input, expected] : test_cases) {
+    auto &[in1, in2] = input;
+    alu->op = 1;
+    alu->in1 = in1;
+    alu->in2 = in2;
+    step();
+    EXPECT_EQ((uint32_t)alu->out, expected);
+  }
 }
