@@ -34,6 +34,7 @@ protected:
   }
 
   ~AluTest() {
+    traces->dump(ctx->time());
     alu->final();
     traces->close();
   }
