@@ -148,3 +148,24 @@ TEST_F(AluTest, Xor) {
     EXPECT_EQ((uint32_t)alu->out, expected);
   }
 }
+
+TEST_F(AluTest, ShiftLeft) {
+  std::vector<std::tuple<std::tuple<uint32_t, uint32_t>, uint32_t>> test_cases =
+      {{{0, 0}, 0},
+       {{1, 0}, 1},
+       {{0, 1}, 0},
+       {{1, 1}, 2},
+       {{0x7fffffff, 1}, 0xfffffffe},
+       {{0x7fffffff, 4}, 0xfffffff0},
+       {{0x80000000, 1}, 0},
+       {{0x80000000, 0x80000000}, 0}};
+
+  for (auto &[input, expected] : test_cases) {
+    auto &[in1, in2] = input;
+    alu->op = 5;
+    alu->in1 = in1;
+    alu->in2 = in2;
+    step();
+    EXPECT_EQ((uint32_t)alu->out, expected);
+  }
+}
