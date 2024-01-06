@@ -46,7 +46,7 @@ protected:
   }
 };
 
-TEST_F(AluTest, TestAddition) {
+TEST_F(AluTest, Addition) {
   alu->op = 0;
   alu->in1 = 0;
   alu->in2 = 0;
@@ -90,7 +90,7 @@ TEST_F(AluTest, TestAddition) {
   EXPECT_EQ((uint32_t)alu->out, 0);
 }
 
-TEST_F(AluTest, TestSubstraction) {
+TEST_F(AluTest, Substraction) {
   alu->op = 1;
   alu->in1 = 0;
   alu->in2 = 0;
