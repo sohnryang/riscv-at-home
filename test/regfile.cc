@@ -97,3 +97,26 @@ TEST_F(RegfileTest, Write) {
     step();
   }
 }
+
+TEST_F(RegfileTest, WriteX0) {
+  reset();
+
+  regfile->clk ^= 1;
+  regfile->write_idx = 0;
+  regfile->write_data = 0x12345678;
+  regfile->write_enable = 1;
+  regfile->rst = 0;
+  step();
+
+  regfile->clk ^= 1;
+  regfile->write_enable = 0;
+  step();
+
+  regfile->clk ^= 1;
+  regfile->read_idx1 = 0;
+  regfile->read_idx2 = 0;
+  step();
+
+  EXPECT_EQ((uint32_t)regfile->read_data1, 0);
+  EXPECT_EQ((uint32_t)regfile->read_data2, 0);
+}
