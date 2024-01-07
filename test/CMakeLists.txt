@@ -16,3 +16,7 @@ gtest_discover_tests(alu_test)
 add_executable(regfile_test regfile.cc)
 target_link_libraries(regfile_test PRIVATE GTest::gtest_main)
 gtest_discover_tests(regfile_test)
+
+add_executable(imem_test imem.cc)
+target_link_libraries(imem_test PRIVATE GTest::gtest_main)
+gtest_discover_tests(imem_test)
