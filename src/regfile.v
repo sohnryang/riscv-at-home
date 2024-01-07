@@ -16,7 +16,7 @@ module regfile (
       read_data1 = 0;
       read_data2 = 0;
       for (integer i = 0; i < 32; i = i + 1) regs[i] = 0;
-    end else if (write_enable) regs[write_idx] = write_data;
+    end else if (write_enable && write_idx != 0) regs[write_idx] = write_data;
   end
 
   always @(*) begin
