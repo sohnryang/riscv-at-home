@@ -73,6 +73,6 @@ TEST_F(ImemTest, Read) {
   for (int i = 0; i < mem.size(); i++) {
     imem->addr = i;
     step();
-    EXPECT_EQ((uint32_t)imem->read_data, mem[i]);
+    EXPECT_EQ((uint32_t)imem->inst, mem[i]);
   }
 }
