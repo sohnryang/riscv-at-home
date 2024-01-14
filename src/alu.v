@@ -16,8 +16,8 @@ module alu (
       `ALU_SLL: out = in1 << in2;
       `ALU_SRL: out = in1 >> in2;
       `ALU_SRA: out = $signed(in1) >>> in2;
-      `ALU_LT:  out[0] = $signed(in1) < $signed(in2);
-      `ALU_LTU: out[0] = in1 < in2;
+      `ALU_LT:  out = {31'b0, $signed(in1) < $signed(in2)};
+      `ALU_LTU: out = {31'b0, in1 < in2};
       default:  out = 0;
     endcase
   end

@@ -225,7 +225,7 @@ TEST_F(AluTest, LessThan) {
     alu->in1 = in1;
     alu->in2 = in2;
     step();
-    EXPECT_EQ(((uint32_t)alu->out) & 1, expected);
+    EXPECT_EQ((uint32_t)alu->out, expected);
   }
 }
 
@@ -242,6 +242,6 @@ TEST_F(AluTest, LessThanUnsigned) {
     alu->in1 = in1;
     alu->in2 = in2;
     step();
-    EXPECT_EQ(((uint32_t)alu->out) & 1, expected);
+    EXPECT_EQ((uint32_t)alu->out, expected);
   }
 }
