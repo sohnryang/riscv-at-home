@@ -8,4 +8,5 @@
 `define ALU_SRA 4'd7
 `define ALU_LT 4'd8
 `define ALU_LTU 4'd9
+`define ALU_EQ 4'd10
 // vim: set ft=verilog:
