@@ -4,8 +4,6 @@
 #include <memory>
 #include <vector>
 
-#include <verilated.h>
-#include <verilated_vcd_c.h>
 #include <verilated_vpi.h>
 
 #include "Vimem.h"

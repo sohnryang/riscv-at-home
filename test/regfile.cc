@@ -3,9 +3,6 @@
 #include <cstdint>
 #include <memory>
 
-#include <verilated.h>
-#include <verilated_vcd_c.h>
-
 #include "Vregfile.h"
 #include "test_utils.h"
 

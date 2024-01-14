@@ -5,9 +5,6 @@
 #include <tuple>
 #include <vector>
 
-#include <verilated.h>
-#include <verilated_vcd_c.h>
-
 #include "Valu.h"
 #include "test_utils.h"
 
