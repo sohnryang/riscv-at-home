@@ -20,8 +20,8 @@ module regfile (
   end
 
   always @(*) begin
-    read_data1 <= regs[read_idx1];
-    read_data2 <= regs[read_idx2];
+    read_data1 = regs[read_idx1];
+    read_data2 = regs[read_idx2];
   end
 endmodule
 // vim: set ft=verilog:
