@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
 #include <tuple>
 #include <vector>
 
@@ -10,41 +9,14 @@
 #include <verilated_vcd_c.h>
 
 #include "Valu.h"
+#include "test_utils.h"
 
-class AluTest : public ::testing::Test {
+class AluTest : public SingleComponentFixture<Valu, 5> {
 protected:
-  std::unique_ptr<VerilatedContext> ctx;
-  std::unique_ptr<Valu> alu;
-  std::unique_ptr<VerilatedVcdC> traces;
-
-  AluTest() {
-    ctx = std::make_unique<VerilatedContext>();
-    ctx->traceEverOn(true);
-
-    alu = std::make_unique<Valu>(ctx.get());
-    alu->op = 0;
-    alu->in1 = 0;
-    alu->in2 = 0;
-
-    traces = std::make_unique<VerilatedVcdC>();
-    alu->trace(traces.get(), 5);
-
-    auto test_info = ::testing::UnitTest::GetInstance()->current_test_info();
-    std::string trace_filename = std::string(test_info->test_case_name()) +
-                                 "_" + test_info->name() + ".vcd";
-    traces->open(trace_filename.c_str());
-  }
-
-  ~AluTest() {
-    traces->dump(ctx->time());
-    alu->final();
-    traces->close();
-  }
-
-  void step() {
-    alu->eval();
-    traces->dump(ctx->time());
-    ctx->timeInc(1);
+  void init_component() override {
+    component->op = 0;
+    component->in1 = 0;
+    component->in2 = 0;
   }
 };
 
@@ -60,11 +32,11 @@ TEST_F(AluTest, Addition) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 0;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 0;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -81,11 +53,11 @@ TEST_F(AluTest, Substraction) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 1;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 1;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -101,11 +73,11 @@ TEST_F(AluTest, And) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 2;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 2;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -121,11 +93,11 @@ TEST_F(AluTest, Or) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 3;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 3;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -141,11 +113,11 @@ TEST_F(AluTest, Xor) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 4;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 4;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -162,11 +134,11 @@ TEST_F(AluTest, ShiftLeft) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 5;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 5;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -183,11 +155,11 @@ TEST_F(AluTest, ShiftRightLogical) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 6;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 6;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -204,11 +176,11 @@ TEST_F(AluTest, ShiftRightArithmetic) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 7;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 7;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -221,11 +193,11 @@ TEST_F(AluTest, LessThan) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 8;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 8;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -238,11 +210,11 @@ TEST_F(AluTest, LessThanUnsigned) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 9;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 9;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }
 
@@ -255,10 +227,10 @@ TEST_F(AluTest, Equal) {
 
   for (auto &[input, expected] : test_cases) {
     auto &[in1, in2] = input;
-    alu->op = 10;
-    alu->in1 = in1;
-    alu->in2 = in2;
+    component->op = 10;
+    component->in1 = in1;
+    component->in2 = in2;
     step();
-    EXPECT_EQ((uint32_t)alu->out, expected);
+    EXPECT_EQ((uint32_t)component->out, expected);
   }
 }

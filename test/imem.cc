@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include <verilated.h>
@@ -10,39 +9,11 @@
 #include <verilated_vpi.h>
 
 #include "Vimem.h"
+#include "test_utils.h"
 
-class ImemTest : public ::testing::Test {
+class ImemTest : public SingleComponentFixture<Vimem, 5> {
 protected:
-  std::unique_ptr<VerilatedContext> ctx;
-  std::unique_ptr<Vimem> imem;
-  std::unique_ptr<VerilatedVcdC> traces;
-
-  ImemTest() {
-    ctx = std::make_unique<VerilatedContext>();
-    ctx->traceEverOn(true);
-
-    imem = std::make_unique<Vimem>(ctx.get());
-
-    traces = std::make_unique<VerilatedVcdC>();
-    imem->trace(traces.get(), 5);
-
-    auto test_info = ::testing::UnitTest::GetInstance()->current_test_info();
-    std::string trace_filename = std::string(test_info->test_case_name()) +
-                                 "_" + std::string(test_info->name()) + ".vcd";
-    traces->open(trace_filename.c_str());
-  }
-
-  ~ImemTest() {
-    traces->dump(ctx->time());
-    imem->final();
-    traces->close();
-  }
-
-  void step() {
-    imem->eval();
-    traces->dump(ctx->time());
-    ctx->timeInc(1);
-  }
+  void init_component() override {}
 
   void write_mem(const std::vector<uint32_t> &mem) {
     vpiHandle regs_handle =
@@ -71,8 +42,8 @@ TEST_F(ImemTest, Read) {
   step();
 
   for (int i = 0; i < mem.size(); i++) {
-    imem->addr = i;
+    component->addr = i;
     step();
-    EXPECT_EQ((uint32_t)imem->inst, mem[i]);
+    EXPECT_EQ((uint32_t)component->inst, mem[i]);
   }
 }
