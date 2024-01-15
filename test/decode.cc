@@ -39,3 +39,13 @@ TEST_F(DecodeTest, JAL) {
   EXPECT_EQ((uint32_t)component->rd, 3);
   EXPECT_EQ((uint32_t)component->imm, 0x1234);
 }
+
+TEST_F(DecodeTest, JALR) {
+  component->inst = 0x12328267; // jalr x4, x5, 0x123
+  step();
+  EXPECT_TRUE((uint32_t)component->valid);
+  EXPECT_EQ((uint32_t)component->opcode, 0b1100111);
+  EXPECT_EQ((uint32_t)component->rd, 4);
+  EXPECT_EQ((uint32_t)component->rs1, 5);
+  EXPECT_EQ((uint32_t)component->imm, 0x123);
+}
