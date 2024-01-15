@@ -49,3 +49,41 @@ TEST_F(DecodeTest, JALR) {
   EXPECT_EQ((uint32_t)component->rs1, 5);
   EXPECT_EQ((uint32_t)component->imm, 0x123);
 }
+
+TEST_F(DecodeTest, Branches) {
+  struct BranchDecodeResult {
+    uint32_t valid, opcode, rs1, rs2, imm, alu_op, negate_alu_lsb;
+
+    bool operator==(const BranchDecodeResult &other) const = default;
+  };
+  std::vector<std::pair<uint32_t, BranchDecodeResult>> test_cases = {
+      // beq x6, x7, 0x456
+      {0x44730b63, BranchDecodeResult({1, 0b1100011, 6, 7, 0x456, 10, 0})},
+
+      // bne x8, x9, 0xabc
+      {0x2a941ee3, BranchDecodeResult({1, 0b1100011, 8, 9, 0xabc, 10, 1})},
+
+      // blt x10, x11, 0xffe
+      {0x7eb54fe3, BranchDecodeResult({1, 0b1100011, 10, 11, 0xffe, 8, 0})},
+
+      // bge x12, x13, 0x234
+      {0x22d65a63, BranchDecodeResult({1, 0b1100011, 12, 13, 0x234, 8, 1})},
+
+      // bltu x14, x15, 0x12
+      {0x00f76963, BranchDecodeResult({1, 0b1100011, 14, 15, 0x12, 9, 0})},
+
+      // bgeu x16, x17, 0x678
+      {0x67187c63, BranchDecodeResult({1, 0b1100011, 16, 17, 0x678, 9, 1})},
+  };
+
+  for (auto &[inst, expected] : test_cases) {
+    component->inst = inst;
+    step();
+    EXPECT_EQ(expected,
+              BranchDecodeResult(
+                  {(uint32_t)component->valid, (uint32_t)component->opcode,
+                   (uint32_t)component->rs1, (uint32_t)component->rs2,
+                   (uint32_t)component->imm, (uint32_t)component->alu_op,
+                   (uint32_t)component->negate_alu_lsb}));
+  }
+}
