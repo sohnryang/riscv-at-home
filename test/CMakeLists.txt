@@ -32,3 +32,10 @@ target_link_libraries(
   PRIVATE GTest::gtest_main
   INTERFACE test_utils)
 gtest_discover_tests(imem_test)
+
+add_executable(decode_test decode.cc)
+target_link_libraries(
+  decode_test
+  PRIVATE GTest::gtest_main
+  INTERFACE test_utils)
+gtest_discover_tests(decode_test)
