@@ -86,4 +86,13 @@ TEST_F(DecodeTest, Branches) {
                    (uint32_t)component->imm, (uint32_t)component->alu_op,
                    (uint32_t)component->negate_alu_lsb}));
   }
+
+  std::vector<uint32_t> invalid_insts = {0b10'00000'1100011,
+                                         0b11'00000'1100011};
+
+  for (auto &inst : invalid_insts) {
+    component->inst = inst;
+    step();
+    EXPECT_FALSE((uint32_t)component->valid);
+  }
 }
