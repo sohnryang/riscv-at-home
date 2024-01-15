@@ -30,3 +30,12 @@ TEST_F(DecodeTest, AUIPC) {
   EXPECT_EQ((uint32_t)component->rd, 2);
   EXPECT_EQ((uint32_t)component->imm, 0x12345000);
 }
+
+TEST_F(DecodeTest, JAL) {
+  component->inst = 0x234011ef; // jal x3, 0x1234
+  step();
+  EXPECT_TRUE((uint32_t)component->valid);
+  EXPECT_EQ((uint32_t)component->opcode, 0b1101111);
+  EXPECT_EQ((uint32_t)component->rd, 3);
+  EXPECT_EQ((uint32_t)component->imm, 0x1234);
+}
